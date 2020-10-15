@@ -1,4 +1,4 @@
 const fs = require("fs");
 const inquirer = require("inquirer");
 const util = require("util");
-const ques=require("./")
+const ques = require("./");
