@@ -5,14 +5,14 @@
 const Employee = require("./Employee");
 class Engineer extends Employee {
     constructor(github){
-        super(name, id, email)
+        super(name)
         this.github = github;
     }
     getRole(){
         return "Engineer";
     }
     getGithub(){
-        return github;
+        return this.github;
     }
 }
 module.exports = Engineer;
