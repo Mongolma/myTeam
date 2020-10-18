@@ -4,8 +4,8 @@
 //Can get GitHub username via getGithub()
 const Employee = require("./Employee");
 class Engineer extends Employee {
-    constructor(github){
-        super(name)
+    constructor(name, id, email, github){
+        super(github)
         this.github = github;
     }
     getRole(){

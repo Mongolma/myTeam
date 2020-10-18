@@ -4,15 +4,15 @@
 //Can get school via getSchool() returns school
 const Employee = require("./Employee");
 class Intern extends Employee {
-    constructor(school){
-        super(name)
+    constructor(name, id, email, school){
+        super(school)
         this.school = school;
     }
     getRole(){
         return "Intern";
     }
     getSchool(){
-        return name.school;
+        return this.school;
     }
 }
 module.exports = Intern;
