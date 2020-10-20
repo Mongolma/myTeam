@@ -14,6 +14,7 @@ const render = require("./lib/htmlRenderer");
 
 const writeFileAsync = util.promisify(fs.writeFile);
 
+const members = [];
 const managerQuestion = [
   {
     type: "input",
@@ -83,13 +84,29 @@ const internQuestion = [{
 ];
 
 inquirer.prompt([
-    {
-      type: "checkbox",
-      name: "position",
-      message: "What is your position to this company?",
-      choices: ["Manager", "Engineer", "Intern"],
-    },
-  ]);
+  {
+    type: "list",
+    name: "title",
+    message: "What is your job title?",
+    choices: ["Manager", "Engineer", "Intern"],
+  },
+]).then(function (response) {
+  let question = "";
+  const { title } = response;
+  switch (title) {
+    case "Manager":
+     question = managerQuestion;
+     break;
+    case "Engineer":
+     question = engineerQuestion;
+     break;
+    case "Intern":
+     question = internQuestion;
+     break;
+     default:
+  }
+  input(question);
+});
 
 async function init() {
   try {
@@ -102,6 +119,10 @@ async function init() {
   }
 }
 init();
+
+
+
+
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
