@@ -14,46 +14,88 @@ const render = require("./lib/htmlRenderer");
 
 const writeFileAsync = util.promisify(fs.writeFile);
 
-function promptUser() {
-  return inquirer.prompt([
-    {
-      type: "input",
-      name: "name",
-      message: "What is your name?",
-    },
-    {
-      type: "input",
-      name: "id",
-      message: "What is your ID number?",
-    },
+const managerQuestion = [
+  {
+    type: "input",
+    name: "name",
+    message: "What is your name?",
+  },
+  {
+    type: "input",
+    name: "id",
+    message: "What is your ID number?",
+  },
+  {
+    type: "input",
+    name: "email",
+    message: "What is your email address?",
+  },
+  {
+    type: "input",
+    name: "office",
+    message: "What is your office number?",
+  },
+];
+
+const engineerQuestion = [
+  {
+    type: "input",
+    name: "name",
+    message: "What is your name?",
+  },
+  {
+    type: "input",
+    name: "id",
+    message: "What is your ID number?",
+  },
+  {
+    type: "input",
+    name: "email",
+    message: "What is your email address?",
+  },
+  {
+    type: "input",
+    name: "username",
+    message: "What is your GitHub name?",
+  },
+];
+
+const internQuestion = [{
+  type: "input",
+  name: "name",
+  message: "What is your name?",
+},
+{
+  type: "input",
+  name: "id",
+  message: "What is your ID number?",
+},
+{
+  type: "input",
+  name: "email",
+  message: "What is your email address?",
+},
+{
+  type: "input",
+  name: "school",
+  message: "What is your school number?",
+},
+];
+
+inquirer.prompt([
     {
       type: "checkbox",
       name: "position",
-      message: "What is your poision to this company?",
-      choices: ["Emploee", "Manager", "Engineer1", "Engineer2", "Intern"],
-    },
-    {
-      type: "input",
-      name: "username",
-      message: "What is your GitHub name?",
-    },
-    {
-      type: "input",
-      name: "school",
-      message: "What is your school number?",
-    },
-    {
-      type: "input",
-      name: "office",
-      message: "What is your office number?",
+      message: "What is your position to this company?",
+      choices: ["Manager", "Engineer", "Intern"],
     },
   ]);
-}
+
 async function init() {
   try {
     const response = await promptUser();
-    const html = render.htmlRenderer(response);
-    await writeFileAsync("outputPath", html);
+    const html = render(response);
+    await writeFileAsync(outputPath, html);
     console.log("Success!");
   } catch (err) {
     console.log(err);
