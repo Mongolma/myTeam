@@ -13,5 +13,5 @@ You need to make sure you install npm before you run this application.
 - Node.js
 - Jest.js
   
-Url to the GitHub:
-Url to the video: 
+- Url to the GitHub:
+- Url to the video: https://drive.google.com/file/d/1amK1eCadqWnI3VVQ_Lnuu-QNG8Wc3P3S/view
