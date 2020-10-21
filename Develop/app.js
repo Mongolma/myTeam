@@ -1,20 +1,18 @@
+const Manager = require("./lib/Manager");
+const Engineer = require("./lib/Engineer");
+const Intern = require("./lib/Intern");
 const fs = require("fs");
 const inquirer = require("inquirer");
 const util = require("util");
 const path = require("path");
-const Manager = require("./lib/Manager");
-const Engineer = require("./lib/Engineer");
-const Intern = require("./lib/Intern");
-
 
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
-
 const writeFileAsync = util.promisify(fs.writeFile);
 
-const members = [];
+const employees = [];
 const managerQuestion = [
   {
     type: "input",
@@ -42,102 +40,103 @@ const engineerQuestion = [
   {
     type: "input",
     name: "name",
-    message: "What is your name?",
+    message: "What is the engineer name?",
   },
   {
     type: "input",
     name: "id",
-    message: "What is your ID number?",
+    message: "What is the engineer ID number?",
   },
   {
     type: "input",
     name: "email",
-    message: "What is your email address?",
+    message: "What is the engineer email address?",
   },
   {
     type: "input",
     name: "username",
-    message: "What is your GitHub name?",
+    message: "What is the engineer GitHub name?",
   },
 ];
 
-const internQuestion = [{
-  type: "input",
-  name: "name",
-  message: "What is your name?",
-},
-{
-  type: "input",
-  name: "id",
-  message: "What is your ID number?",
-},
-{
-  type: "input",
-  name: "email",
-  message: "What is your email address?",
-},
-{
-  type: "input",
-  name: "school",
-  message: "What is your school number?",
-},
+const internQuestion = [
+  {
+    type: "input",
+    name: "name",
+    message: "What is the intern name?",
+  },
+  {
+    type: "input",
+    name: "id",
+    message: "What is the intern ID number?",
+  },
+  {
+    type: "input",
+    name: "email",
+    message: "What is the intern email address?",
+  },
+  {
+    type: "input",
+    name: "school",
+    message: "What is the intern school number?",
+  },
 ];
 
-const questionType = {
-    type: "list",
-    name: "title",
-    message: "What is your job title?",
-    choices: ["Manager", "Engineer", "Intern"],
-  }
+const jobTitle = {
+  type: "list",
+  name: "title",
+  message: "What's your job title?",
+  choices: ["Manager", "Engineer", "Intern"],
+};
 
-const doNextEmployee = {
+const toNextEmployee = {
   type: "confirm",
   name: "nextEmployee",
   message: "Do you need to enter another employee? ",
   default: true,
-}
+};
+
 async function init() {
   let question = "";
-  const { title } = await inquirer.prompt(questionType)
-    switch (title) {
+  const { title } = await inquirer.prompt(jobTitle);
+  switch (title) {
     case "Manager":
-     question = managerQuestion;
-     break;
+      question = managerQuestion;
+      break;
     case "Engineer":
-     question = engineerQuestion;
-     break;
+      question = engineerQuestion;
+      break;
     case "Intern":
-     question = internQuestion;
-     break;
-     default:
+      question = internQuestion;
+      break;
+    default:
   }
   getAnswer(question);
 }
 init();
 
-async function getAnswer(questions = []) {
+async function getAnswer(questions) {
   try {
-    questions.push(doNextEmployee);
-    const {nextEmployee, ...answers} = await inquirer.prompt(questions)
-    const {name, id, email, github, school, officeNumber} = answers;
-    if(officeNumber) {
-      members.push(new Manager(name, id, email, officeNumber));
+    questions.push(toNextEmployee);
+    const { nextEmployee, ...answers } = await inquirer.prompt(questions);
+    const { name, id, email, github, school, officeNumber } = answers;
+    if (officeNumber) {
+      employees.push(new Manager(name, id, email, officeNumber));
     } else if (github) {
-      members.push(new Engineer(name, id, email, github));
+      employees.push(new Engineer(name, id, email, github));
     } else {
-      members.push(new Intern(name, id, email, school));
-    } 
+      employees.push(new Intern(name, id, email, school));
+    }
     if (nextEmployee) {
       init();
     } else {
-      const html = render(members);
-      await writeFileAsync(outputPath, html)
+      const html = render(employees);
+      await writeFileAsync(outputPath, html);
     }
   } catch (err) {
     console.log(err);
   }
 }
-
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
