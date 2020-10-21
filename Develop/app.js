@@ -5,7 +5,7 @@ const path = require("path");
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
-const Employee = require("./lib/Employee");
+
 
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
@@ -33,7 +33,7 @@ const managerQuestion = [
   },
   {
     type: "input",
-    name: "office",
+    name: "officeNumber",
     message: "What is your office number?",
   },
 ];
@@ -83,17 +83,23 @@ const internQuestion = [{
 },
 ];
 
-inquirer.prompt([
-  {
+const questionType = {
     type: "list",
     name: "title",
     message: "What is your job title?",
     choices: ["Manager", "Engineer", "Intern"],
-  },
-]).then(function (response) {
+  }
+
+const doNextEmployee = {
+  type: "confirm",
+  name: "nextEmployee",
+  message: "Do you need to enter another employee? ",
+  default: true,
+}
+async function init() {
   let question = "";
-  const { title } = response;
-  switch (title) {
+  const { title } = await inquirer.prompt(questionType)
+    switch (title) {
     case "Manager":
      question = managerQuestion;
      break;
@@ -105,23 +111,32 @@ inquirer.prompt([
      break;
      default:
   }
-  input(question);
-});
+  getAnswer(question);
+}
+init();
 
-async function init() {
+async function getAnswer(questions = []) {
   try {
-    const response = await promptUser();
-    const html = render(response);
-    await writeFileAsync(outputPath, html);
-    console.log("Success!");
+    questions.push(doNextEmployee);
+    const {nextEmployee, ...answers} = await inquirer.prompt(questions)
+    const {name, id, email, github, school, officeNumber} = answers;
+    if(officeNumber) {
+      members.push(new Manager(name, id, email, officeNumber));
+    } else if (github) {
+      members.push(new Engineer(name, id, email, github));
+    } else {
+      members.push(new Intern(name, id, email, school));
+    } 
+    if (nextEmployee) {
+      init();
+    } else {
+      const html = render(members);
+      await writeFileAsync(outputPath, html)
+    }
   } catch (err) {
     console.log(err);
   }
 }
-init();
-
-
-
 
 
 // Write code to use inquirer to gather information about the development team members,
